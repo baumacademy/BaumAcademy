@@ -1,0 +1,18 @@
+# dependencies
+/node_modules
+
+# testing
+/coverage
+junit.xml
+
+# build
+/build
+.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# misc
+.DS_Store
+
+# editor
+.vscode
+.idea
