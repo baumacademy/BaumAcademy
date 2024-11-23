@@ -18,6 +18,10 @@ export interface ProfileProps {
 export type Props = {
   user?: ProfileProps;
 };
+
+type ClassResponseType = {
+    classes : ClassType[]
+}
 type ClassType = {
   id?: string;
   subject?: string;
@@ -42,8 +46,8 @@ const Profile: React.FC<Props> = ({ user }) => {
   useEffect(() => {
     setProfileData(defaultUser);
     const fetchClasses = async () => {
-      const classes = await axios.get<ClassType[]>(`${apiURL}/classes`);
-      setClasses([...classes.data]);
+      const classes = await axios.get<ClassResponseType>(`${apiURL}/classes`);
+      setClasses(classes.data.classes);
     };
     fetchClasses();
   }, [user]);
