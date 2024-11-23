@@ -177,7 +177,7 @@ const Profile: React.FC<Props> = ({ user }) => {
                     <div className="flex flex-col space-y-4 p-6 bg-gray-100 rounded-lg max-w-sm mx-auto">
                         <p className="text-lg font-semibold">Select an Courses</p>
                         {classes.map((cla) => (
-                            <label className="flex items-center space-x-2">
+                            <label key={cla.id} className="flex items-center space-x-2">
                             <input
                                 name="class"
                                 type="radio"
