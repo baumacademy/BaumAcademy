@@ -19,6 +19,7 @@ const LoginPage: React.FC = () => {
       password
     })
     if (result.data.success) {
+      localStorage.setItem("userId", result.data.user.userId ?? "")
       redirect(`landing/${result.data.user.userId}`)
   } else {
       setError(result.data.message)
