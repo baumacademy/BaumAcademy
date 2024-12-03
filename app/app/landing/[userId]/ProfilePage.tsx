@@ -20,7 +20,7 @@ export type Props = {
 };
 
 type ClassResponseType = {
-    classes : ClassType[]
+  classes: ClassType[]
 }
 type ClassType = {
   id?: string;
@@ -90,36 +90,27 @@ const Profile: React.FC<Props> = ({ user }) => {
     redirect("/courses");
   };
 
+  const onLogOut = () => {
+    localStorage.removeItem('userId')
+    redirect("/")
+  }
+
   return (
     <div className="flex flex-col items-center bg-gray-100 p-6 rounded-lg shadow-md max-w-lg mx-auto my-10 min-w-fit">
       {/* Name and Bio */}
-      {isEditing ? (
-        <div className="flex flex-col items-center mt-4">
-          <input
-            type="text"
-            name="firstName"
-            value={profileData?.firstName}
-            onChange={handleChange}
-            className="text-2xl font-semibold text-gray-800 border-b border-gray-400 focus:outline-none text-center"
-          />
-          <input
-            type="text"
-            name="lastName"
-            value={profileData?.lastName}
-            onChange={handleChange}
-            className="text-2xl font-semibold text-gray-800 border-b border-gray-400 focus:outline-none text-center"
-          />
-        </div>
-      ) : (
-        <>
-          <h2 className="mt-4 text-2xl font-semibold text-gray-800">
-            {profileData?.firstName + " " + profileData?.lastName}
-          </h2>
-        </>
-      )}
+      <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600" onClick={onLogOut}>
+        Log out
+      </button>
+        <h2 className="mt-4 text-2xl font-semibold text-gray-800">
+          {profileData?.firstName + " " + profileData?.lastName}
+        </h2>
+
 
       {/* Additional Information */}
       <div className="mt-4 space-y-2 text-center">
+        <p className="text-gray-600">
+          <span className="font-semibold">Email:</span> {profileData?.email}
+        </p>
         {isEditing ? (
           <>
             <input
@@ -129,14 +120,6 @@ const Profile: React.FC<Props> = ({ user }) => {
               onChange={handleChange}
               className="text-gray-600 text-center border-b border-gray-400 focus:outline-none w-full"
               placeholder="city"
-            />
-            <input
-              type="email"
-              name="email"
-              value={profileData?.email}
-              onChange={handleChange}
-              className="text-gray-600 text-center border-b border-gray-400 focus:outline-none w-full"
-              placeholder="Email"
             />
             <input
               type="text"
@@ -169,11 +152,6 @@ const Profile: React.FC<Props> = ({ user }) => {
               <span className="font-semibold">Location:</span>{" "}
               {profileData?.city ?? "N/A"}
             </p>
-
-            <p className="text-gray-600">
-              <span className="font-semibold">Email:</span> {profileData?.email}
-            </p>
-
             <p className="text-gray-600">
               <span className="font-semibold">Gender:</span>{" "}
               {profileData?.gender ?? "N/A"}

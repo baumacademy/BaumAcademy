@@ -19,6 +19,8 @@ const LandingPage = () => {
     fetchUser();
   }, [userId]);
 
+  if (typeof window === "undefined") return null;
+
   if (localStorage.getItem('userId') !== userId) {
     return <div className="flex justify-center min-h-screen bg-gray-100 pt-12">
       <h1>
