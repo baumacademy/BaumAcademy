@@ -19,14 +19,14 @@ const LandingPage = () => {
     fetchUser();
   }, [userId]);
 
-  if(localStorage.getItem('userId') !== userId){
-      return     <div className="flex justify-center min-h-screen bg-gray-100 pt-12">
+  if (localStorage.getItem('userId') !== userId) {
+    return <div className="flex justify-center min-h-screen bg-gray-100 pt-12">
       <h1>
         you don't have permission to see userId {userId}
       </h1>
     </div>
   }
-  
+
   return (
     <div className="flex justify-center min-h-screen bg-gray-100 pt-12">
       <Profile user={user} />
