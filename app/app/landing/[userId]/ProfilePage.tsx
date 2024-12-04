@@ -3,6 +3,7 @@ import { apiURL } from "@/app/utils";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { redirect } from "next/navigation";
+import { useLocalStorage } from "@/app/LocalStorageContextProvider";
 
 export interface ProfileProps {
   id?: string;
@@ -42,6 +43,7 @@ const Profile: React.FC<Props> = ({ user }) => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [profileData, setProfileData] = useState<ProfileProps>();
   const [classes, setClasses] = useState<ClassType[]>([]);
+  const { removeItem } = useLocalStorage();
 
   useEffect(() => {
     setProfileData(defaultUser);
@@ -91,7 +93,8 @@ const Profile: React.FC<Props> = ({ user }) => {
   };
 
   const onLogOut = () => {
-    localStorage.removeItem('userId')
+    // localStorage.removeItem('userId')
+    removeItem()
     redirect("/")
   }
 

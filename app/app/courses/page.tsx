@@ -1,15 +1,14 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import Profile, { ProfileProps } from "./ProfilePage";
 import axios from "axios";
-import { useParams } from "next/navigation";
 import { apiURL } from "@/app/utils";
 import FancyList from "./FancyList";
 import {  redirect } from "next/navigation";
+import { useLocalStorage } from "../LocalStorageContextProvider";
 
 const CoursesPage = () => {
   const [classes, setClasses] = useState([]);
-  const userId = localStorage.getItem('userId')
+  const { state : userId} = useLocalStorage();
   useEffect(() => {
     const fetchUser = async () => {
       const response = await axios.get<{ classes: any }>(`${apiURL}/classes`);

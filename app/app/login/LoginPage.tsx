@@ -5,11 +5,13 @@ import Link from 'next/link';
 import React, { useState } from 'react';
 import { apiURL } from '../utils';
 import { redirect } from 'next/navigation';
+import { useLocalStorage } from '../LocalStorageContextProvider';
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string>('')
+  const { setState } = useLocalStorage();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,7 +21,7 @@ const LoginPage: React.FC = () => {
       password
     })
     if (result.data.success) {
-      localStorage.setItem("userId", result.data.user.userId ?? "")
+      setState(result.data.user.userId ?? "")
       redirect(`landing/${result.data.user.userId}`)
   } else {
       setError(result.data.message)
