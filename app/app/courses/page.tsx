@@ -18,7 +18,7 @@ const CoursesPage = () => {
   }, []);
 
   return (
-    <div className="flex justify-center min-h-screen bg-gray-100 pt-12 flex-col">
+    <div className="flex min-h-screen bg-gray-100 pt-12 flex-col">
       <h1 className="items-center bg-gray-100 p-6 rounded-lg shadow-md max-w-lg mx-auto min-w-fit">Courses</h1>
       <FancyList items={classes} />
       <button onClick={() => {

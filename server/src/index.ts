@@ -93,8 +93,8 @@ app.post("/api/student/login", async (req: Request, res: Response) => {
   const user = await getUser?.toJSON();
 
   if (!user) {
-    res.status(404).send({
-      message: "User not found",
+    res.send({
+      message: "Incorrect password or username",
       success: false,
     });
   } else {

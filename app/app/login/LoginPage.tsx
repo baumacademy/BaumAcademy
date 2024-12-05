@@ -16,6 +16,7 @@ const LoginPage: React.FC = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     // Handle login logic here
+    setError("")
     const result = await axios.post(`${apiURL}/student/login`, {
       email,
       password

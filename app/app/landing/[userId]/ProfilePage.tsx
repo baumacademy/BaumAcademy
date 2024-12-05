@@ -99,55 +99,64 @@ const Profile: React.FC<Props> = ({ user }) => {
   }
 
   return (
-    <div className="flex flex-col items-center bg-gray-100 p-6 rounded-lg shadow-md max-w-lg mx-auto my-10 min-w-fit">
+    <div className="flex flex-col items-center bg-gray-100 p-6 rounded-lg shadow-md max-w-lg mx-auto my-10 min-w-full">
       {/* Name and Bio */}
-      <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600" onClick={onLogOut}>
-        Log out
-      </button>
         <h2 className="mt-4 text-2xl font-semibold text-gray-800">
           {profileData?.firstName + " " + profileData?.lastName}
         </h2>
 
 
       {/* Additional Information */}
-      <div className="mt-4 space-y-2 text-center">
+      <div className="mt-4 space-y-2 text-start flex-col flex">
         <p className="text-gray-600">
           <span className="font-semibold">Email:</span> {profileData?.email}
         </p>
         {isEditing ? (
           <>
-            <input
+<label className="w-full flex justify-between">
+  Location: 
+<input
               type="text"
               name="city"
               value={profileData?.city}
               onChange={handleChange}
-              className="text-gray-600 text-center border-b border-gray-400 focus:outline-none w-full"
+              className="text-gray-600 text-center border-b border-gray-400 focus:outline-none"
               placeholder="city"
             />
-            <input
+</label>
+<label className="w-full flex justify-between">
+  Gender: 
+<input
               type="text"
               name="gender"
               value={profileData?.gender}
               onChange={handleChange}
-              className="text-gray-600 text-center border-b border-gray-400 focus:outline-none w-full"
+              className="text-gray-600 text-center border-b border-gray-400 focus:outline-none"
               placeholder="Gender"
             />
-            <input
+</label>
+<label className="w-full flex justify-between">
+  Occupation: 
+<input
               type="text"
               name="occupation"
               value={profileData?.occupation}
               onChange={handleChange}
-              className="text-gray-600 text-center border-b border-gray-400 focus:outline-none w-full"
+              className="text-gray-600 text-center border-b border-gray-400 focus:outline-none"
               placeholder="Occupation"
             />
-            <input
+</label>
+<label className="w-full flex justify-between">
+  batch#: 
+<input
               type="text"
               name="batch"
               value={profileData?.batch}
               onChange={handleChange}
-              className="text-gray-600 text-center border-b border-gray-400 focus:outline-none w-full"
+              className="text-gray-600 text-center border-b border-gray-400 focus:outline-none"
               placeholder="Batch #"
             />
+</label>
           </>
         ) : (
           <>
@@ -203,6 +212,7 @@ const Profile: React.FC<Props> = ({ user }) => {
       </div>
 
       {/* Action Buttons */}
+      <div className="flex flex-col items-center">
       <div className="mt-6 flex space-x-4">
         {isEditing ? (
           <>
@@ -227,15 +237,19 @@ const Profile: React.FC<Props> = ({ user }) => {
             >
               Edit
             </button>
+            <button className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-blue-600" onClick={onLogOut}>
+        Log out
+      </button>
           </>
         )}
       </div>
       <button
         onClick={navigateToCourses}
-        className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 mt-10"
+        className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 mt-6"
       >
         View Available Courses
       </button>
+      </div>
     </div>
   );
 };
