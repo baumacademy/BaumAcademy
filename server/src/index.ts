@@ -106,8 +106,8 @@ app.post("/api/student/login", async (req: Request, res: Response) => {
         success: true,
       });
     } else {
-      res.status(401).send({
-        message: "Incorrect password",
+      res.send({
+        message: "Incorrect password or username",
         success: false,
       });
     }
