@@ -11,6 +11,9 @@ const LandingPage = () => {
   const [user, setUser] = useState<ProfileProps>();
   const { state } = useLocalStorage();
   useEffect(() => {
+    if(!state){
+      redirect('/')
+    }
     if(state != userId){
       redirect(`/landing/${state}`)
     }
