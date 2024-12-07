@@ -1,32 +1,32 @@
-"use client"
-import axios from 'axios';
-import Link from 'next/link';
+"use client";
+import axios from "axios";
+import Link from "next/link";
 // src/LoginPage.tsx
-import React, { useState } from 'react';
-import { apiURL } from '../utils';
-import { redirect } from 'next/navigation';
-import { useLocalStorage } from '../LocalStorageContextProvider';
+import React, { useState } from "react";
+import { apiURL } from "../utils";
+import { redirect } from "next/navigation";
+import { useLocalStorage } from "../LocalStorageContextProvider";
 
 const LoginPage: React.FC = () => {
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [error, setError] = useState<string>('')
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<string>("");
   const { setState } = useLocalStorage();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     // Handle login logic here
-    setError("")
+    setError("");
     const result = await axios.post(`${apiURL}/student/login`, {
       email,
-      password
-    })
+      password,
+    });
     if (result.data.success) {
-      setState(result.data.user.userId ?? "")
-      redirect(`landing/${result.data.user.userId}`)
-  } else {
-      setError(result.data.message)
-  }
+      setState(result.data.user.userId ?? "");
+      redirect(`landing/${result.data.user.userId}`);
+    } else {
+      setError(result.data.message);
+    }
   };
 
   return (
@@ -35,12 +35,15 @@ const LoginPage: React.FC = () => {
         <h2 className="text-2xl font-bold text-center text-gray-800">Login</h2>
         <form className="space-y-4" onSubmit={handleLogin}>
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-600">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-600"
+            >
               email
             </label>
             <input
               type="text"
-              id="email"
+              data-testid="email-input"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
@@ -49,12 +52,15 @@ const LoginPage: React.FC = () => {
             />
           </div>
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-600">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-600"
+            >
               Password
             </label>
             <input
               type="password"
-              id="password"
+              data-testid="password-input"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
@@ -62,7 +68,7 @@ const LoginPage: React.FC = () => {
               required
             />
           </div>
-          {error && <div className='text-red-300'>{error}</div>}
+          {error && <div className="text-red-300">{error}</div>}
           <button
             type="submit"
             className="w-full px-4 py-2 font-semibold text-white bg-indigo-500 rounded-md hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-400"
@@ -71,7 +77,7 @@ const LoginPage: React.FC = () => {
           </button>
         </form>
         <p className="text-sm text-center text-gray-600">
-          Don’t have an account?{' '}
+          Don’t have an account?{" "}
           <Link href="/register" className="text-indigo-500 hover:underline">
             Sign up
           </Link>

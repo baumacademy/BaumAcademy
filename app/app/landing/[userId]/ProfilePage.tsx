@@ -21,8 +21,8 @@ export type Props = {
 };
 
 type ClassResponseType = {
-  classes: ClassType[]
-}
+  classes: ClassType[];
+};
 type ClassType = {
   id?: string;
   subject?: string;
@@ -94,9 +94,9 @@ const Profile: React.FC<Props> = ({ user }) => {
 
   const onLogOut = () => {
     // localStorage.removeItem('userId')
-    removeItem()
-    redirect("/")
-  }
+    removeItem();
+    redirect("/");
+  };
 
   return (
     <div className="flex flex-col items-center bg-gray-100 p-6 rounded-lg shadow-md max-w-lg mx-auto my-10 min-w-full">
@@ -104,7 +104,6 @@ const Profile: React.FC<Props> = ({ user }) => {
       <h2 className="mt-4 text-2xl font-semibold text-gray-800">
         {profileData?.firstName + " " + profileData?.lastName}
       </h2>
-
 
       {/* Additional Information */}
       <div className="mt-4 space-y-2 text-start flex-col flex">
@@ -118,6 +117,7 @@ const Profile: React.FC<Props> = ({ user }) => {
               <input
                 type="text"
                 name="city"
+                data-testid="profile-city"
                 value={profileData?.city}
                 onChange={handleChange}
                 className="text-gray-600 text-center border-b border-gray-400 focus:outline-none"
@@ -129,6 +129,7 @@ const Profile: React.FC<Props> = ({ user }) => {
               <input
                 type="text"
                 name="gender"
+                data-testid="profile-gender"
                 value={profileData?.gender}
                 onChange={handleChange}
                 className="text-gray-600 text-center border-b border-gray-400 focus:outline-none"
@@ -140,6 +141,7 @@ const Profile: React.FC<Props> = ({ user }) => {
               <input
                 type="text"
                 name="occupation"
+                data-testid="profile-occupation"
                 value={profileData?.occupation}
                 onChange={handleChange}
                 className="text-gray-600 text-center border-b border-gray-400 focus:outline-none"
@@ -151,6 +153,7 @@ const Profile: React.FC<Props> = ({ user }) => {
               <input
                 type="text"
                 name="batch"
+                data-testid="profile-batch"
                 value={profileData?.batch}
                 onChange={handleChange}
                 className="text-gray-600 text-center border-b border-gray-400 focus:outline-none"
@@ -182,9 +185,10 @@ const Profile: React.FC<Props> = ({ user }) => {
           <>
             <div className="flex flex-col space-y-4 p-6 bg-gray-100 rounded-lg max-w-sm mx-auto">
               <p className="text-lg font-semibold">Select an Courses</p>
-              {classes.map((cla) => (
+              {classes.map((cla, idx) => (
                 <label key={cla.id} className="flex items-center space-x-2">
                   <input
+                    data-testid={`profile-radio-${idx}`}
                     name="class"
                     type="radio"
                     value={cla.id}
@@ -237,7 +241,10 @@ const Profile: React.FC<Props> = ({ user }) => {
               >
                 Edit
               </button>
-              <button className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-blue-600" onClick={onLogOut}>
+              <button
+                className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                onClick={onLogOut}
+              >
                 Log out
               </button>
             </>
