@@ -46,7 +46,7 @@ const RegisterPage: React.FC = () => {
             </label>
             <input
               type="text"
-              id="name"
+              data-testid="register-name"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
               className="w-full px-4 py-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
@@ -63,7 +63,7 @@ const RegisterPage: React.FC = () => {
             </label>
             <input
               type="text"
-              id="name"
+              data-testid="register-name"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
               className="w-full px-4 py-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
@@ -80,7 +80,7 @@ const RegisterPage: React.FC = () => {
             </label>
             <input
               type="email"
-              id="email"
+              data-testid="register-email"
               value={email}
               onChange={(e) => {
                 if (error) {
@@ -102,7 +102,7 @@ const RegisterPage: React.FC = () => {
             </label>
             <input
               type="password"
-              id="password"
+              data-testid="register-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"

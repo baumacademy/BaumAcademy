@@ -3,6 +3,7 @@ import { apiURL } from "@/app/utils";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { redirect } from "next/navigation";
+import { useLocalStorage } from "@/app/LocalStorageContextProvider";
 
 export interface ProfileProps {
   id?: string;
@@ -17,6 +18,10 @@ export interface ProfileProps {
 }
 export type Props = {
   user?: ProfileProps;
+};
+
+type ClassResponseType = {
+  classes: ClassType[];
 };
 type ClassType = {
   id?: string;
@@ -38,12 +43,13 @@ const Profile: React.FC<Props> = ({ user }) => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [profileData, setProfileData] = useState<ProfileProps>();
   const [classes, setClasses] = useState<ClassType[]>([]);
+  const { removeItem } = useLocalStorage();
 
   useEffect(() => {
     setProfileData(defaultUser);
     const fetchClasses = async () => {
-      const classes = await axios.get<ClassType[]>(`${apiURL}/classes`);
-      setClasses([...classes.data]);
+      const classes = await axios.get<ClassResponseType>(`${apiURL}/classes`);
+      setClasses(classes.data.classes);
     };
     fetchClasses();
   }, [user]);
@@ -86,78 +92,74 @@ const Profile: React.FC<Props> = ({ user }) => {
     redirect("/courses");
   };
 
+  const onLogOut = () => {
+    // localStorage.removeItem('userId')
+    removeItem();
+    redirect("/");
+  };
+
   return (
-    <div className="flex flex-col items-center bg-gray-100 p-6 rounded-lg shadow-md max-w-lg mx-auto my-10 min-w-fit">
+    <div className="flex flex-col items-center bg-gray-100 p-6 rounded-lg shadow-md max-w-lg mx-auto my-10 min-w-full">
       {/* Name and Bio */}
-      {isEditing ? (
-        <div className="flex flex-col items-center mt-4">
-          <input
-            type="text"
-            name="firstName"
-            value={profileData?.firstName}
-            onChange={handleChange}
-            className="text-2xl font-semibold text-gray-800 border-b border-gray-400 focus:outline-none text-center"
-          />
-          <input
-            type="text"
-            name="lastName"
-            value={profileData?.lastName}
-            onChange={handleChange}
-            className="text-2xl font-semibold text-gray-800 border-b border-gray-400 focus:outline-none text-center"
-          />
-        </div>
-      ) : (
-        <>
-          <h2 className="mt-4 text-2xl font-semibold text-gray-800">
-            {profileData?.firstName + " " + profileData?.lastName}
-          </h2>
-        </>
-      )}
+      <h2 className="mt-4 text-2xl font-semibold text-gray-800">
+        {profileData?.firstName + " " + profileData?.lastName}
+      </h2>
 
       {/* Additional Information */}
-      <div className="mt-4 space-y-2 text-center">
+      <div className="mt-4 space-y-2 text-start flex-col flex">
+        <p className="text-gray-600">
+          <span className="font-semibold">Email:</span> {profileData?.email}
+        </p>
         {isEditing ? (
           <>
-            <input
-              type="text"
-              name="city"
-              value={profileData?.city}
-              onChange={handleChange}
-              className="text-gray-600 text-center border-b border-gray-400 focus:outline-none w-full"
-              placeholder="city"
-            />
-            <input
-              type="email"
-              name="email"
-              value={profileData?.email}
-              onChange={handleChange}
-              className="text-gray-600 text-center border-b border-gray-400 focus:outline-none w-full"
-              placeholder="Email"
-            />
-            <input
-              type="text"
-              name="gender"
-              value={profileData?.gender}
-              onChange={handleChange}
-              className="text-gray-600 text-center border-b border-gray-400 focus:outline-none w-full"
-              placeholder="Gender"
-            />
-            <input
-              type="text"
-              name="occupation"
-              value={profileData?.occupation}
-              onChange={handleChange}
-              className="text-gray-600 text-center border-b border-gray-400 focus:outline-none w-full"
-              placeholder="Occupation"
-            />
-            <input
-              type="text"
-              name="batch"
-              value={profileData?.batch}
-              onChange={handleChange}
-              className="text-gray-600 text-center border-b border-gray-400 focus:outline-none w-full"
-              placeholder="Batch #"
-            />
+            <label className="w-full flex justify-between">
+              Location:
+              <input
+                type="text"
+                name="city"
+                data-testid="profile-city"
+                value={profileData?.city}
+                onChange={handleChange}
+                className="text-gray-600 text-center border-b border-gray-400 focus:outline-none"
+                placeholder="city"
+              />
+            </label>
+            <label className="w-full flex justify-between">
+              Gender:
+              <input
+                type="text"
+                name="gender"
+                data-testid="profile-gender"
+                value={profileData?.gender}
+                onChange={handleChange}
+                className="text-gray-600 text-center border-b border-gray-400 focus:outline-none"
+                placeholder="Gender"
+              />
+            </label>
+            <label className="w-full flex justify-between">
+              Occupation:
+              <input
+                type="text"
+                name="occupation"
+                data-testid="profile-occupation"
+                value={profileData?.occupation}
+                onChange={handleChange}
+                className="text-gray-600 text-center border-b border-gray-400 focus:outline-none"
+                placeholder="Occupation"
+              />
+            </label>
+            <label className="w-full flex justify-between">
+              Batch #:
+              <input
+                type="text"
+                name="batch"
+                data-testid="profile-batch"
+                value={profileData?.batch}
+                onChange={handleChange}
+                className="text-gray-600 text-center border-b border-gray-400 focus:outline-none"
+                placeholder="Batch #"
+              />
+            </label>
           </>
         ) : (
           <>
@@ -165,11 +167,6 @@ const Profile: React.FC<Props> = ({ user }) => {
               <span className="font-semibold">Location:</span>{" "}
               {profileData?.city ?? "N/A"}
             </p>
-
-            <p className="text-gray-600">
-              <span className="font-semibold">Email:</span> {profileData?.email}
-            </p>
-
             <p className="text-gray-600">
               <span className="font-semibold">Gender:</span>{" "}
               {profileData?.gender ?? "N/A"}
@@ -188,9 +185,10 @@ const Profile: React.FC<Props> = ({ user }) => {
           <>
             <div className="flex flex-col space-y-4 p-6 bg-gray-100 rounded-lg max-w-sm mx-auto">
               <p className="text-lg font-semibold">Select an Courses</p>
-              {classes.map((cla) => (
-                <label className="flex items-center space-x-2">
+              {classes.map((cla, idx) => (
+                <label key={cla.id} className="flex items-center space-x-2">
                   <input
+                    data-testid={`profile-radio-${idx}`}
                     name="class"
                     type="radio"
                     value={cla.id}
@@ -218,39 +216,47 @@ const Profile: React.FC<Props> = ({ user }) => {
       </div>
 
       {/* Action Buttons */}
-      <div className="mt-6 flex space-x-4">
-        {isEditing ? (
-          <>
-            <button
-              onClick={saveChanges}
-              className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
-            >
-              Save
-            </button>
-            <button
-              onClick={toggleEditing}
-              className="bg-gray-300 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-400"
-            >
-              Cancel
-            </button>
-          </>
-        ) : (
-          <>
-            <button
-              onClick={toggleEditing}
-              className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-            >
-              Edit
-            </button>
-          </>
-        )}
+      <div className="flex flex-col items-center">
+        <div className="mt-6 flex space-x-4">
+          {isEditing ? (
+            <>
+              <button
+                onClick={saveChanges}
+                className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+              >
+                Save
+              </button>
+              <button
+                onClick={toggleEditing}
+                className="bg-gray-300 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={toggleEditing}
+                className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+              >
+                Edit
+              </button>
+              <button
+                className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                onClick={onLogOut}
+              >
+                Log out
+              </button>
+            </>
+          )}
+        </div>
+        <button
+          onClick={navigateToCourses}
+          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 mt-6"
+        >
+          View Available Courses
+        </button>
       </div>
-      <button
-        onClick={navigateToCourses}
-        className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 mt-10"
-      >
-        View Available Courses
-      </button>
     </div>
   );
 };
