@@ -1,7 +1,10 @@
 "use strict";
 
+const bcrypt = require("bcrypt"); // Import bcrypt
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
+    const hashedPassword = await bcrypt.hash("password123", 10); // Replace 'password123' with the desired plain-text password
     await queryInterface.bulkInsert(
       "Students",
       [
@@ -9,7 +12,7 @@ module.exports = {
           firstName: "Test",
           lastName: "User",
           email: "testuser@example.com",
-          password: "hashed_password_here", // You may want to hash this if you have hashing logic in place
+          password: hashedPassword,
           city: "TestCity",
           batch: "2024",
           classId: 1, // Assuming a class with ID 1 exists
