@@ -43,6 +43,7 @@ const Profile: React.FC<Props> = ({ user }) => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [profileData, setProfileData] = useState<ProfileProps>();
   const [classes, setClasses] = useState<ClassType[]>([]);
+  const [error, setError] = useState("")
   const { removeItem } = useLocalStorage();
 
   useEffect(() => {
@@ -59,7 +60,6 @@ const Profile: React.FC<Props> = ({ user }) => {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    console.log(name, value);
     if (name === "class") {
       const filteredClass = classes.find((cla) => cla.id == value);
       setProfileData((prevData) => ({
@@ -83,13 +83,23 @@ const Profile: React.FC<Props> = ({ user }) => {
 
   // Save changes and exit editing mode
   const saveChanges = async () => {
-    // Logic to save changes, if needed (e.g., API call)
-    await axios.patch(`${apiURL}/${user?.id}`, profileData);
-    setIsEditing(false);
+    setError('')
+    if (!["male", "female"].includes(profileData!.gender!.toLocaleLowerCase())) {
+      setError("Gender can be either Male or Female")
+    } else {
+      // Logic to save changes, if needed (e.g., API call)
+      const result = await axios.patch(`${apiURL}/${user?.id}`, profileData);
+      if (!result.data.success) {
+        setError(result.data.message)
+      } else {
+        setIsEditing(false);
+      }
+    }
+
   };
 
   const navigateToCourses = () => {
-    redirect("/courses");
+    redirect(`/courses/${defaultUser.class?.id}`);
   };
 
   const onLogOut = () => {
@@ -181,6 +191,14 @@ const Profile: React.FC<Props> = ({ user }) => {
             </p>
           </>
         )}
+        {error && <div
+          className={`flex items-start p-4 rounded-lg border-l-4 shadow-md max-w-lg mx-auto text-red-600`}
+        >
+          {/* Message */}
+          <div className="flex-1">
+            <p className="text-sm leading-tight">{error}</p>
+          </div>
+        </div>}
         {isEditing ? (
           <>
             <div className="flex flex-col space-y-4 p-6 bg-gray-100 rounded-lg max-w-sm mx-auto">
@@ -214,7 +232,6 @@ const Profile: React.FC<Props> = ({ user }) => {
           </>
         )}
       </div>
-
       {/* Action Buttons */}
       <div className="flex flex-col items-center">
         <div className="mt-6 flex space-x-4">
@@ -250,12 +267,12 @@ const Profile: React.FC<Props> = ({ user }) => {
             </>
           )}
         </div>
-        <button
+        {!isEditing && <button
           onClick={navigateToCourses}
           className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 mt-6"
         >
           View Available Courses
-        </button>
+        </button>}
       </div>
     </div>
   );
