@@ -16,7 +16,6 @@ const RegisterPage: React.FC = () => {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     // Handle registration logic here
-    console.log("api", apiURL);
     const result = await axios.post(`${apiURL}/student/create`, {
       firstName,
       lastName,
