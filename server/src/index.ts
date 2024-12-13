@@ -8,6 +8,7 @@ import cors from "cors";
 import { StudentModel } from "./student";
 import { StudentType, StudentUpdateType } from "./student.model";
 import { ClassModel } from "./class";
+import { hasMissingValues } from "./utils/hasMissingValues";
 
 dotenv.config();
 
@@ -152,9 +153,27 @@ app.patch("/api/:id", async (req: Request, res: Response) => {
     batch: req.body.batch,
     classId: req.body.class.id,
   };
-  await Student.update(student, { where: { id } });
+  if(hasMissingValues(student)){
+    return res.send({
+      message: "fields cannot be empty, please fill out all fields",
+      success: false
+    })
+  }
+  await Student.update({...student}, { where: { id } });
   return res.send({
     message: "Student updated successfully",
+    success: true,
+  });
+});
+
+app.patch("/api/:id/course", async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const student = {
+    classId: req.body.classId,
+  };
+  await Student.update({...student}, { where: { id } });
+  return res.send({
+    message: "Student updated course successfully",
     success: true,
   });
 });
