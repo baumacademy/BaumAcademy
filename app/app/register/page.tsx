@@ -3,7 +3,7 @@ import axios from "axios";
 import Link from "next/link";
 // src/RegisterPage.tsx
 import React, { useState } from "react";
-import { apiURL } from "../utils";
+import { apiURL, validatePassword } from "../utils";
 import { redirect } from "next/navigation";
 
 const RegisterPage: React.FC = () => {
@@ -12,6 +12,15 @@ const RegisterPage: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
+  
+  // const handlePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const pass = e.target.value
+  //   const err = validatePassword(pass)
+  //   if(err){
+  //     setError(err)
+  //   }
+  //   setPassword(pass)
+  // }
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -108,6 +117,7 @@ const RegisterPage: React.FC = () => {
               placeholder="Enter your password"
               required
             />
+            {validatePassword(password).map(err => <div key={err}>{err}</div>)}
           </div>
           {error && <div className="text-red-300">{error}</div>}
           <button
