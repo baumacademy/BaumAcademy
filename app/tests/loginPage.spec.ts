@@ -25,6 +25,37 @@ test.describe("login page", () => {
     //     await expect(value).toBeVisible
     // }
   });
+
+  //12/17/2024
+  //create a test case for courses serach engine bar
+
+  test("Search bar gives the correct list of classes", async ({ page }) => {
+    const profile = page.getByRole("button", {
+      name: "View Available Courses",
+    });
+    //Ensure the 'view available courses' button is visible and click it
+    await expect(profile).toBeVisible();
+    await profile.click();
+    //Get the search input field and ensure it is visible
+    const searchInput = page.getByPlaceholder(
+      "Search by name or description..."
+    );
+    await expect(searchInput).toBeVisible();
+    //Get all the list items before filling in the search input
+    const listsBeforeFill = await page.locator("li").all();
+    console.log("listsBeforeFill", listsBeforeFill.length); //Fix the console log here
+    await expect(listsBeforeFill.length).toBe(4); //Expect 4 items initially
+    //Fill the search input with 'qa'
+    await searchInput.fill("qa");
+    //Get the QA element that should appear after the search
+    const qa = page.locator("h3", { hasText: "QA" });
+    //Get all the list items after filling in the search input
+    const lists = await page.locator("li").all();
+    console.log("lists", lists.length); //Log the new number of ist items
+    //Check if only 1 list item matches the search result
+    await expect(lists.length).toBe(1);
+    await expect(qa).toBeVisible(); //Ensure QA course appears in the list
+  });
   //   Today's automation test cases 12/12/2024
 
   // 1 - cannot update user's profile with empty input(all fields), and expect to see the error message
