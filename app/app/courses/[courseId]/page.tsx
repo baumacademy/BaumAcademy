@@ -27,7 +27,7 @@ const CoursesPage = () => {
 
   const handleEnrollCourse = async () => {
     await axios.patch(`${apiURL}/${userId}/course`, { classId: selected })
-    redirect(`/landing/${userId}`)
+    redirect(`/profile/${userId}`)
   }
 
 

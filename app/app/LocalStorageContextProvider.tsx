@@ -18,10 +18,14 @@ const LocalStorageContext = createContext<LocalStorageContextValue<any> | undefi
 
 export function LocalStorageProvider<T>({ children, keyName, defaultValue }: LocalStorageProviderProps<T>) {
     // if (typeof window === "undefined") return null;
+    const isBrowser = typeof window !== "undefined"; 
   const [state, setState] = useState<T>(() => {
     // Retrieve the initial state from localStorage
-    const storedValue = localStorage.getItem(keyName);
-    return storedValue ? JSON.parse(storedValue) : defaultValue;
+    if(isBrowser){
+      const storedValue = localStorage.getItem(keyName);
+      return storedValue ? JSON.parse(storedValue) : defaultValue;
+    }
+    return defaultValue
   });
   
   const removeItem = () => localStorage.removeItem(keyName)

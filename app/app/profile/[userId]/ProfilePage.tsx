@@ -18,6 +18,7 @@ export interface ProfileProps {
 }
 export type Props = {
   user?: ProfileProps;
+  isMyProfile?: boolean
 };
 
 type ClassResponseType = {
@@ -29,7 +30,7 @@ type ClassType = {
   content?: string;
 };
 
-const Profile: React.FC<Props> = ({ user }) => {
+const Profile: React.FC<Props> = ({ user, isMyProfile }) => {
   const defaultUser = {
     firstName: user?.firstName,
     lastName: user?.lastName,
@@ -100,6 +101,14 @@ const Profile: React.FC<Props> = ({ user }) => {
 
   const navigateToCourses = () => {
     redirect(`/courses/${defaultUser.class?.id}`);
+  };
+
+  const navigateToClassmates = () => {
+    redirect(`/classmates?classId=${defaultUser.class?.id}`);
+  };
+
+  const navigateToAllStudents = () => {
+    redirect(`/students`);
   };
 
   const onLogOut = () => {
@@ -234,7 +243,7 @@ const Profile: React.FC<Props> = ({ user }) => {
       </div>
       {/* Action Buttons */}
       <div className="flex flex-col items-center">
-        <div className="mt-6 flex space-x-4">
+        {isMyProfile ? <div className="mt-6 flex space-x-4">
           {isEditing ? (
             <>
               <button
@@ -266,13 +275,36 @@ const Profile: React.FC<Props> = ({ user }) => {
               </button>
             </>
           )}
-        </div>
-        {!isEditing && <button
+        </div> : <div className="mt-6 flex space-x-4">
+            <>
+              <button
+                onClick={navigateToClassmates}
+                className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+              >
+                Go Back
+              </button>
+            </>
+        </div>}
+        {isMyProfile && <>
+          {!isEditing && <button
           onClick={navigateToCourses}
           className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 mt-6"
         >
           View Available Courses
         </button>}
+        {!isEditing && <button
+          onClick={navigateToClassmates}
+          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 mt-6"
+        >
+          View Classmates
+        </button>}
+        {!isEditing && <button
+          onClick={navigateToAllStudents}
+          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 mt-6"
+        >
+          View All Students
+        </button>}
+        </>}
       </div>
     </div>
   );

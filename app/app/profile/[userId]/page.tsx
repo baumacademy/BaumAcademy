@@ -10,12 +10,10 @@ const LandingPage = () => {
   const { userId } = useParams();
   const [user, setUser] = useState<ProfileProps>();
   const { state } = useLocalStorage();
+  const isMyProfile = state == userId
   useEffect(() => {
     if(!state){
       redirect('/')
-    }
-    if(state != userId){
-      redirect(`/landing/${state}`)
     }
     const fetchUser = async () => {
       const response = await axios.get<{ user: ProfileProps }>(
@@ -24,11 +22,11 @@ const LandingPage = () => {
       setUser(response.data.user);
     };
     fetchUser();
-  }, [userId]);
+  }, [userId, state]);
 
   return (
     <div className="flex justify-center min-h-screen bg-gray-100 pt-12">
-      <Profile user={user} />
+      <Profile user={user} isMyProfile={isMyProfile} />
     </div>
   );
 };
