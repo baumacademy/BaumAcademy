@@ -52,13 +52,38 @@ app.use(bodyParser.json());
 // });
 
 app.get("/api", async (req: Request, res: Response) => {
-  const students = await Student.findAll();
+  const students = await Student.findAll({
+    attributes: ["id", "firstName", "lastName", "occupation", "city"],
+    include: [
+      {
+        model: Class,
+        as: "class",
+        attributes: ["id", "subject", "content"],
+      },
+    ],
+  });
+  // const students = await Student.findAll({attributes: ["id", "firstName", "lastName", "occupation", "city",]});
   res.send(students);
 });
 
 app.get("/api/classes", async (req: Request, res: Response) => {
   const classes = await Class.findAll();
   res.send({ classes });
+});
+
+app.get("/api/classes/:classId", async (req: Request, res: Response) => {
+  const { classId } = req.params;
+  const classMates = await Class.findOne({
+    where: { id: classId },
+    include: [
+      {
+        model: Student, // Include associated students
+        as: "students", // Alias, ensure it matches your association
+        attributes: ["id", "firstName", "lastName", "occupation", "city"]
+      },
+    ],
+  });
+  res.send({classMates: classMates?.students})
 });
 
 app.post("/api/student/create", async (req: Request, res: Response) => {
