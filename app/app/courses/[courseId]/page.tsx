@@ -89,7 +89,7 @@ const CoursesPage = () => {
 
         {selected !== courseId && <button onClick={handleEnrollCourse} className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 mx-auto min-w-fit">Enroll Course</button>}
         <button onClick={() => {
-          redirect(`/landing/${userId}`)
+          redirect(`/profile/${userId}`)
         }} className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 mx-auto min-w-fit">Go Back</button>
       </div>
     </div>

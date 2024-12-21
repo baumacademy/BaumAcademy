@@ -47,6 +47,7 @@ const StudentTable = () => {
         <table className="min-w-full bg-white border border-gray-200">
           <thead>
             <tr className="bg-gray-100 text-gray-700 uppercase text-sm leading-normal">
+            <th className="py-3 px-6 text-left">Student ID</th>
               <th className="py-3 px-6 text-left">First Name</th>
               <th className="py-3 px-6 text-left">Last Name</th>
               <th className="py-3 px-6 text-left">Occupation</th>

@@ -61,17 +61,23 @@ const CoursesPage = () => {
                         return (
                             <li
                                 key={item.id}
-                                className={`p-4 flex justify-between items-center cursor-pointer w-full rounded-md transition flex`}
+                                className={`p-4 flex justify-between items-center w-full rounded-md transition`}
                             >
                                 <div className="flex flex-grow justify-between">
-                                <div className="flex-grow">
-                                    <h3 className="text-lg font-semibold text-gray-900">{item.firstName + " " + item.lastName}</h3>
-                                    <p className="text-sm text-gray-500"><strong>occupation</strong> : {item.occupation}</p>
-                                    <p className="text-sm text-gray-500"><strong>location</strong> : {item.city}</p>
-                                </div>
-                                <button onClick={() => {
-                    redirect(`/profile/${item.id}`)
-                }} className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 mx-auto min-w-fit">View Profile</button>
+                                    <div className="flex-grow">
+                                        <h3 className="text-lg font-semibold text-gray-900">{item.firstName + " " + item.lastName}
+                                            {item.id === userId && (
+                                            <span className="ml-2 text-sm text-blue-600 font-bold">(You)</span>
+                                        )}</h3>
+
+                                        <p className="text-sm text-gray-500"><strong>occupation</strong> : {item.occupation}</p>
+                                        <p className="text-sm text-gray-500"><strong>location</strong> : {item.city}</p>
+                                    </div>
+                                    {
+                                        item.id !== userId ? <button onClick={() => {
+                                            redirect(`/profile/${item.id}`)
+                                        }} className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 mx-auto min-w-fit">View Profile</button> : null
+                                    }
                                 </div>
                             </li>
                         )
