@@ -60,7 +60,7 @@ const CoursesPage = () => {
           />
         </div>
         <ul className="flex flex-col items-start bg-gray-100 p-6 rounded-lg shadow-md max-w-lg mx-auto my-2 min-w-fit">
-          {filteredData.map((item) => {
+          {filteredData?.map((item) => {
             const isSelected = String(item.id) === selected; // Check if item is selected
             const isEnrolled = String(item.id) === courseId; // Check if item is selected
             return (
