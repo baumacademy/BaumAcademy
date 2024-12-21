@@ -10,6 +10,7 @@ interface ListItem {
     lastName: string
     firstName: string
     occupation: string
+    email: string
 }
 const CoursesPage = () => {
     const searchParams = useSearchParams();
@@ -60,7 +61,7 @@ const CoursesPage = () => {
                     />
                 </div>
                 <ul className="flex flex-col items-start bg-gray-100 p-6 rounded-lg shadow-md max-w-lg mx-auto my-2 min-w-fit">
-                    {filteredData.map((item) => {
+                    {filteredData?.map((item) => {
                         return (
                             <li
                                 key={item.id}
@@ -72,7 +73,7 @@ const CoursesPage = () => {
                                             {item.id === userId && (
                                             <span className="ml-2 text-sm text-blue-600 font-bold">(You)</span>
                                         )}</h3>
-
+<p className="text-sm text-gray-500"><strong>email</strong> : {item.email}</p>
                                         <p className="text-sm text-gray-500"><strong>occupation</strong> : {item.occupation}</p>
                                         <p className="text-sm text-gray-500"><strong>location</strong> : {item.city}</p>
                                     </div>

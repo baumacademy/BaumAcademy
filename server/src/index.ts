@@ -79,7 +79,7 @@ app.get("/api/classes/:classId", async (req: Request, res: Response) => {
       {
         model: Student, // Include associated students
         as: "students", // Alias, ensure it matches your association
-        attributes: ["id", "firstName", "lastName", "occupation", "city"]
+        attributes: ["id", "firstName", "lastName", "occupation", "city", "email"]
       },
     ],
   });

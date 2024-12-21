@@ -100,11 +100,11 @@ const Profile: React.FC<Props> = ({ user, isMyProfile }) => {
   };
 
   const navigateToCourses = () => {
-    redirect(`/courses/${defaultUser.class?.id}`);
+    redirect(`/courses/${profileData?.class?.id}`);
   };
 
   const navigateToClassmates = () => {
-    redirect(`/classmates?classId=${defaultUser.class?.id}`);
+    redirect(`/classmates?classId=${profileData?.class?.id}`);
   };
 
   const navigateToAllStudents = () => {
