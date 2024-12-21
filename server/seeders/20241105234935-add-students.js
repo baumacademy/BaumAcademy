@@ -3,50 +3,53 @@ const { faker } = require('@faker-js/faker');
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up (queryInterface, Sequelize) {
-    /**
-     * Add seed commands here.
-     *
-     * Example:
-     * await queryInterface.bulkInsert('People', [{
-     *   name: 'John Doe',
-     *   isBetaMember: false
-     * }], {});
-    */
-     const students = Array.from({ length: 1 }, () => ({
-      firstName: 'Marco',
-      lastName: 'Seo',
+  async up(queryInterface, Sequelize) {
+    // Generate 50 random students
+    const students = Array.from({ length: 50 }, (_, index) => ({
+      firstName: faker.person.firstName(),
+      lastName: faker.person.lastName(),
       email: faker.internet.email(),
-      city: 'fairfax',
-      batch: "2401",
-      gender: "Male",
-      occupation: "software developer",
-      classId: 1,
+      city: faker.location.city(),
+      batch: faker.number.int({ min: 2301, max: 2501 }).toString(),
+      gender: faker.helpers.arrayElement(["Male", "Female"]),
+      occupation: faker.person.jobTitle(),
+      classId: faker.number.int({ min: 1, max: 4 }), // Random classId between 1 and 10
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     }));
 
-    return queryInterface.bulkInsert('Students', [...students, {
-      firstName: 'Ashton',
-      lastName: 'Seo',
-      email: faker.internet.email(),
-      city: 'fairfax',
-      batch: "2401",
-      gender: "Male",
-      occupation: "software developer",
-      classId: 2,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    }]);
+    // Add specific predefined students (Marco and Ashton)
+    students.push(
+      {
+        firstName: 'Marco',
+        lastName: 'Seo',
+        email: faker.internet.email(),
+        city: 'fairfax',
+        batch: "2401",
+        gender: "Male",
+        occupation: "software developer",
+        classId: 1,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        firstName: 'Ashton',
+        lastName: 'Seo',
+        email: faker.internet.email(),
+        city: 'fairfax',
+        batch: "2401",
+        gender: "Male",
+        occupation: "software developer",
+        classId: 2,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }
+    );
+
+    return queryInterface.bulkInsert('Students', students);
   },
 
-  async down (queryInterface, Sequelize) {
-    /**
-     * Add commands to revert seed here.
-     *
-     * Example:
-     * await queryInterface.bulkDelete('People', null, {});
-     */
-     return queryInterface.bulkDelete('Students', null, {});
+  async down(queryInterface, Sequelize) {
+    return queryInterface.bulkDelete('Students', null, {});
   }
 };
