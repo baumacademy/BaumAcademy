@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Profile, { ProfileProps } from "./ProfilePage";
 import axios from "axios";
-import { redirect, useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { apiURL } from "@/app/utils";
 import { useLocalStorage } from "@/app/LocalStorageContextProvider";
 
@@ -10,11 +10,9 @@ const LandingPage = () => {
   const { userId } = useParams();
   const [user, setUser] = useState<ProfileProps>();
   const { state } = useLocalStorage();
+  const router = useRouter();
   const isMyProfile = state == userId
   useEffect(() => {
-    if(!state){
-      redirect('/')
-    }
     const fetchUser = async () => {
       const response = await axios.get<{ user: ProfileProps }>(
         `${apiURL}/${userId}`
@@ -22,7 +20,7 @@ const LandingPage = () => {
       setUser(response.data.user);
     };
     fetchUser();
-  }, [userId, state]);
+  }, [userId, state, router]);
 
   return (
     <div className="flex justify-center min-h-screen bg-gray-100 pt-12">
