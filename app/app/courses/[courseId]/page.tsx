@@ -49,7 +49,7 @@ const CoursesPage = () => {
       <h1 className="items-center bg-gray-100 p-6 rounded-lg shadow-md max-w-lg mx-auto min-w-fit">Courses</h1>
 
       <div>
-        <div className="flex flex-col items-start bg-gray-100 p-6 rounded-lg shadow-md max-w-lg mx-auto my-10 min-w-fit">
+        <div className="flex flex-col items-start bg-gray-100 p-6 rounded-lg shadow-md max-w-lg mx-auto my-2 min-w-fit">
           <h1 className="text-2xl font-bold mb-4 text-center">Search Items</h1>
           <input
             type="text"
@@ -59,7 +59,7 @@ const CoursesPage = () => {
             className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
           />
         </div>
-        <ul className="flex flex-col items-start bg-gray-100 p-6 rounded-lg shadow-md max-w-lg mx-auto my-10 min-w-fit">
+        <ul className="flex flex-col items-start bg-gray-100 p-6 rounded-lg shadow-md max-w-lg mx-auto my-2 min-w-fit">
           {filteredData.map((item) => {
             const isSelected = String(item.id) === selected; // Check if item is selected
             const isEnrolled = String(item.id) === courseId; // Check if item is selected

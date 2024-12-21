@@ -83,7 +83,7 @@ app.get("/api/classes/:classId", async (req: Request, res: Response) => {
       },
     ],
   });
-  res.send({classMates: classMates?.students})
+  res.send({classMates: classMates?.students, subject: classMates?.subject})
 });
 
 app.post("/api/student/create", async (req: Request, res: Response) => {

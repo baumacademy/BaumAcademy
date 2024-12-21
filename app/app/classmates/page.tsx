@@ -16,11 +16,14 @@ const CoursesPage = () => {
     const classId = searchParams.get('classId');
     const [query, setQuery] = useState<string>("");
     const [classMates, setClassMates] = useState<ListItem[]>([]);
+    const [subject, setSubject] = useState("")
     const [filteredData, setFilteredData] = useState<ListItem[]>([]);
     const { state: userId } = useLocalStorage();
     useEffect(() => {
         const fetchUser = async () => {
-            const response = await axios.get<{ classMates: ListItem[]; }>(`${apiURL}/classes/${classId}`);
+            const response = await axios.get<{ classMates: ListItem[], subject: string }>(`${apiURL}/classes/${classId}`);
+            console.log('response.data.classMates', response.data.classMates)
+            setSubject(response.data.subject)
             setClassMates(response.data.classMates);
             setFilteredData(response.data.classMates)
         };
@@ -44,10 +47,10 @@ const CoursesPage = () => {
 
     return (
         <div className="flex min-h-screen bg-gray-100 pt-12 flex-col">
-            <h1 className="items-center bg-gray-100 p-6 rounded-lg shadow-md max-w-lg mx-auto min-w-fit mb-4">Classmates</h1>
+            <h1 className="items-center bg-gray-100 p-6 rounded-lg shadow-md max-w-lg mx-auto min-w-fit mb-2">Class : {subject}</h1>
             <div>
-                <div className="flex flex-col items-start bg-gray-100 p-6 rounded-lg shadow-md max-w-lg mx-auto my-10 min-w-fit">
-                    <h1 className="text-2xl font-bold mb-4 text-center">Search Items</h1>
+                <div className="flex flex-col items-start bg-gray-100 p-6 rounded-lg shadow-md max-w-lg mx-auto my-2 min-w-fit">
+                    <h1 className="text-2xl font-bold mb-4 text-center">Search Classmates</h1>
                     <input
                         type="text"
                         placeholder="Search by name or description..."
@@ -56,7 +59,7 @@ const CoursesPage = () => {
                         className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
                     />
                 </div>
-                <ul className="flex flex-col items-start bg-gray-100 p-6 rounded-lg shadow-md max-w-lg mx-auto my-10 min-w-fit">
+                <ul className="flex flex-col items-start bg-gray-100 p-6 rounded-lg shadow-md max-w-lg mx-auto my-2 min-w-fit">
                     {filteredData.map((item) => {
                         return (
                             <li
