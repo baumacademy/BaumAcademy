@@ -2,7 +2,6 @@
 'use client'
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { ProfileProps } from "../profile/[userId]/ProfilePage";
 import { apiURL } from "../utils";
 import { redirect } from "next/navigation";
 import { useLocalStorage } from "../LocalStorageContextProvider";

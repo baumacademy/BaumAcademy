@@ -40,7 +40,8 @@ const CoursesPage = () => {
                 item.firstName.toLowerCase().includes(searchTerm) ||
                 item.lastName.toLowerCase().includes(searchTerm) ||
                 item.occupation.toLowerCase().includes(searchTerm) ||
-                item.city.toLowerCase().includes(searchTerm)
+                item.city.toLowerCase().includes(searchTerm) ||
+                item.email.toLowerCase().includes(searchTerm)
         );
 
         setFilteredData(filtered);
