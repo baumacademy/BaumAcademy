@@ -23,7 +23,7 @@ const LoginPage: React.FC = () => {
     });
     if (result.data.success) {
       setState(result.data.user.userId ?? "");
-      redirect(`landing/${result.data.user.userId}`);
+      redirect(`profile/${result.data.user.userId}`);
     } else {
       setError(result.data.message);
     }

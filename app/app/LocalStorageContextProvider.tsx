@@ -1,4 +1,5 @@
 "use client"
+import { useRouter } from "next/navigation";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 interface LocalStorageContextValue<T> {
@@ -18,18 +19,28 @@ const LocalStorageContext = createContext<LocalStorageContextValue<any> | undefi
 
 export function LocalStorageProvider<T>({ children, keyName, defaultValue }: LocalStorageProviderProps<T>) {
     // if (typeof window === "undefined") return null;
+    const isBrowser = typeof window !== "undefined"; 
+    const router = useRouter();
   const [state, setState] = useState<T>(() => {
     // Retrieve the initial state from localStorage
-    const storedValue = localStorage.getItem(keyName);
-    return storedValue ? JSON.parse(storedValue) : defaultValue;
+    if(isBrowser){
+      const storedValue = localStorage.getItem(keyName);
+      return storedValue ? JSON.parse(storedValue) : defaultValue;
+    }
+    return defaultValue
   });
   
   const removeItem = () => localStorage.removeItem(keyName)
 
   useEffect(() => {
-    // Update localStorage whenever state changes
-    localStorage.setItem(keyName, JSON.stringify(state));
-  }, [keyName, state]);
+    if (isBrowser) {
+      if (!state) {
+        router.replace("/"); // Redirect if state is empty
+      } else {
+        localStorage.setItem(keyName, JSON.stringify(state));
+      }
+    }
+  }, [isBrowser, keyName, router, state]);
 
   return (
     <LocalStorageContext.Provider value={{ state, setState, removeItem }}>
