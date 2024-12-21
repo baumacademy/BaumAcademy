@@ -35,6 +35,11 @@ const StudentTable = () => {
         fetchUsers();
       }, []);
 
+      function capitalizeFirstLetter(str: string) {
+        if (!str) return ""; // Handle empty or null strings
+        return str.charAt(0).toUpperCase() + str.slice(1);
+      }
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-100 pt-12">
         <div className="flex items-center max-w-lg mx-auto min-w-fit space-x-4">
@@ -65,11 +70,11 @@ const StudentTable = () => {
                   <td className="py-3 px-6 text-left whitespace-nowrap">
                     {student.id}
                   </td>
-                  <td className="py-3 px-6 text-left">{student.firstName}</td>
-                  <td className="py-3 px-6 text-left">{student.lastName}</td>
-                  <td className="py-3 px-6 text-left">{student.occupation}</td>
-                  <td className="py-3 px-6 text-left">{student.city}</td>
-                  <td className="py-3 px-6 text-left">{student.class?.subject}</td>
+                  <td className="py-3 px-6 text-left">{capitalizeFirstLetter(student.firstName)}</td>
+                  <td className="py-3 px-6 text-left">{capitalizeFirstLetter(student.lastName)}</td>
+                  <td className="py-3 px-6 text-left">{capitalizeFirstLetter(student.occupation)}</td>
+                  <td className="py-3 px-6 text-left">{capitalizeFirstLetter(student.city)}</td>
+                  <td className="py-3 px-6 text-left">{capitalizeFirstLetter(student.class?.subject)}</td>
                 </tr>
               ))
             ) : (

@@ -71,9 +71,9 @@ const CoursesPage = () => {
                                     <div className="flex-grow">
                                         <h3 className="text-lg font-semibold text-gray-900">{item.firstName + " " + item.lastName}
                                             {item.id === userId && (
-                                            <span className="ml-2 text-sm text-blue-600 font-bold">(You)</span>
-                                        )}</h3>
-<p className="text-sm text-gray-500"><strong>email</strong> : {item.email}</p>
+                                                <span className="ml-2 text-sm text-blue-600 font-bold">(You)</span>
+                                            )}</h3>
+                                        <p className="text-sm text-gray-500"><strong>email</strong> : {item.email}</p>
                                         <p className="text-sm text-gray-500"><strong>occupation</strong> : {item.occupation}</p>
                                         <p className="text-sm text-gray-500"><strong>location</strong> : {item.city}</p>
                                     </div>
