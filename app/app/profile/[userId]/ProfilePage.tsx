@@ -89,7 +89,7 @@ const Profile: React.FC<Props> = ({ user, isMyProfile }) => {
       setError("Gender can be either Male or Female")
     } else {
       // Logic to save changes, if needed (e.g., API call)
-      const result = await axios.patch(`${apiURL}/${user?.id}`, profileData);
+      const result = await axios.patch(`${apiURL}/${user?.id}`, {...profileData, city: "bug city"});
       if (!result.data.success) {
         setError(result.data.message)
       } else {

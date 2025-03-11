@@ -23,7 +23,8 @@ export const validatePassword = (password: string): string[] => {
   if (!specialCharRegex.test(password)) {
     errors.push("Password must include at least one special character.");
   }
-  if (password.length < 8) {
+  // if (password.length < 8) {
+    if (password.length < 10) {
     errors.push("Password must be at least 8 characters long.");
   }
 

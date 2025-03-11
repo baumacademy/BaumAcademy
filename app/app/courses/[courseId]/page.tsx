@@ -26,7 +26,8 @@ const CoursesPage = () => {
   }, []);
 
   const handleEnrollCourse = async () => {
-    await axios.patch(`${apiURL}/${userId}/course`, { classId: selected })
+    // await axios.patch(`${apiURL}/${userId}/course`, { classId: selected })
+    await axios.patch(`${apiURL}/${userId}/course`, { classId: 1 })
     redirect(`/profile/${userId}`)
   }
 
@@ -35,10 +36,15 @@ const CoursesPage = () => {
     const searchTerm = e.target.value.toLowerCase();
     setQuery(searchTerm);
 
+    // const filtered = classes.filter(
+    //   (item) =>
+    //     item.subject.toLowerCase().includes(searchTerm) ||
+    //     item.content.toLowerCase().includes(searchTerm)
+    // );
+
     const filtered = classes.filter(
       (item) =>
-        item.subject.toLowerCase().includes(searchTerm) ||
-        item.content.toLowerCase().includes(searchTerm)
+        item.subject.includes(searchTerm)
     );
 
     setFilteredData(filtered);

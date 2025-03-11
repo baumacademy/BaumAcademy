@@ -35,13 +35,19 @@ const CoursesPage = () => {
         const searchTerm = e.target.value.toLowerCase();
         setQuery(searchTerm);
 
+        // const filtered = classMates.filter(
+        //     (item) =>
+        //         item.firstName.toLowerCase().includes(searchTerm) ||
+        //         item.lastName.toLowerCase().includes(searchTerm) ||
+        //         item.occupation.toLowerCase().includes(searchTerm) ||
+        //         item.city.toLowerCase().includes(searchTerm) ||
+        //         item.email.toLowerCase().includes(searchTerm)
+        // );
+
+
         const filtered = classMates.filter(
             (item) =>
-                item.firstName.toLowerCase().includes(searchTerm) ||
-                item.lastName.toLowerCase().includes(searchTerm) ||
-                item.occupation.toLowerCase().includes(searchTerm) ||
-                item.city.toLowerCase().includes(searchTerm) ||
-                item.email.toLowerCase().includes(searchTerm)
+                item.firstName.toLowerCase().includes(searchTerm)
         );
 
         setFilteredData(filtered);
