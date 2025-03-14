@@ -70,18 +70,21 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.get("/api", async (req: Request, res: Response) => {
-  const students = await Student.findAll({
-    attributes: ["id", "firstName", "lastName", "occupation", "city"],
-    include: [
-      {
-        model: Class,
-        as: "class",
-        attributes: ["id", "subject", "content"],
-      },
-    ],
-  });
-  // const students = await Student.findAll({attributes: ["id", "firstName", "lastName", "occupation", "city",]});
-  res.send(students);
+  try {
+    const students = await Student.findAll({
+      attributes: ["id", "firstName", "lastName", "occupation", "city"],
+      include: [
+        {
+          model: Class,
+          as: "class",
+          attributes: ["id", "subject", "content"],
+        },
+      ],
+    });
+    res.send(students);
+  } catch (error) {
+    res.status(500).send({ message: "Internal Server Error", error });
+  }
 });
 
 /**
@@ -121,8 +124,12 @@ app.get("/api", async (req: Request, res: Response) => {
  */
 
 app.get("/api/classes", async (req: Request, res: Response) => {
-  const classes = await Class.findAll();
-  res.send({ classes });
+  try {
+    const classes = await Class.findAll();
+    res.send({ classes });
+  } catch (error) {
+    res.status(500).send({ message: "Internal Server Error", error });
+  }
 });
 
 /**
@@ -149,18 +156,22 @@ app.get("/api/classes", async (req: Request, res: Response) => {
  */
 
 app.get("/api/classes/:classId", async (req: Request, res: Response) => {
-  const { classId } = req.params;
-  const classMates = await Class.findOne({
-    where: { id: classId },
-    include: [
-      {
-        model: Student, // Include associated students
-        as: "students", // Alias, ensure it matches your association
-        attributes: ["id", "firstName", "lastName", "occupation", "city", "email"]
-      },
-    ],
-  });
-  res.send({classMates: classMates?.students, subject: classMates?.subject})
+  try {
+    const { classId } = req.params;
+    const classMates = await Class.findOne({
+      where: { id: classId },
+      include: [
+        {
+          model: Student, // Include associated students
+          as: "students", // Alias, ensure it matches your association
+          attributes: ["id", "firstName", "lastName", "occupation", "city", "email"]
+        },
+      ],
+    });
+    res.send({classMates: classMates?.students, subject: classMates?.subject});
+  } catch (error) {
+    res.status(500).send({ message: "Internal Server Error", error });
+  }
 });
 
 /**
@@ -204,31 +215,35 @@ app.get("/api/classes/:classId", async (req: Request, res: Response) => {
  */
 
 app.post("/api/student/create", async (req: Request, res: Response) => {
-  const salt = bcrypt.genSaltSync(SALT_ROUNDS);
-  const hash = bcrypt.hashSync(req.body.password, salt);
-  const isExisting = await Student.findOne({
-    where: { email: req.body.email },
-  });
-  if (isExisting) {
-    return res.send({
-      message: "existing email",
-      success: false,
+  try {
+    const salt = bcrypt.genSaltSync(SALT_ROUNDS);
+    const hash = bcrypt.hashSync(req.body.password, salt);
+    const isExisting = await Student.findOne({
+      where: { email: req.body.email },
     });
+    if (isExisting) {
+      return res.send({
+        message: "existing email",
+        success: false,
+      });
+    }
+
+    const student: StudentType = {
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      email: req.body.email,
+      password: hash,
+      updatedAt: new Date(),
+    };
+
+    await Student.create(student);
+    return res.send({
+      message: "Student created successfully",
+      success: true,
+    });
+  } catch (error) {
+    res.status(500).send({ message: "Internal Server Error", error });
   }
-
-  const student: StudentType = {
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    email: req.body.email,
-    password: hash,
-    updatedAt: new Date(),
-  };
-
-  await Student.create(student);
-  return res.send({
-    message: "Student created successfully",
-    success: true,
-  });
 });
 
 /**
@@ -266,28 +281,32 @@ app.post("/api/student/create", async (req: Request, res: Response) => {
  */
 
 app.post("/api/student/login", async (req: Request, res: Response) => {
-  const getUser = await Student.findOne({ where: { email: req.body.email } });
-  const user = await getUser?.toJSON();
+  try {
+    const getUser = await Student.findOne({ where: { email: req.body.email } });
+    const user = await getUser?.toJSON();
 
-  if (!user) {
-    res.send({
-      message: "Incorrect password or username",
-      success: false,
-    });
-  } else {
-    const match = bcrypt.compareSync(req.body.password, user.password);
-    if (match) {
-      res.send({
-        message: "Login successful",
-        user: { userId: user.id },
-        success: true,
-      });
-    } else {
+    if (!user) {
       res.send({
         message: "Incorrect password or username",
         success: false,
       });
+    } else {
+      const match = bcrypt.compareSync(req.body.password, user.password);
+      if (match) {
+        res.send({
+          message: "Login successful",
+          user: { userId: user.id },
+          success: true,
+        });
+      } else {
+        res.send({
+          message: "Incorrect password or username",
+          success: false,
+        });
+      }
     }
+  } catch (error) {
+    res.status(500).send({ message: "Internal Server Error", error });
   }
 });
 
@@ -327,27 +346,31 @@ app.post("/api/student/login", async (req: Request, res: Response) => {
  */
 
 app.get("/api/:id", async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const user = await Student.findOne({
-    where: { id },
-    include: [
-      {
-        model: Class,
-        as: "class",
-        attributes: ["id", "subject", "content"],
-      },
-    ],
-  });
-  if (user) {
-    return res.send({
-      user,
-      success: true,
+  try {
+    const { id } = req.params;
+    const user = await Student.findOne({
+      where: { id },
+      include: [
+        {
+          model: Class,
+          as: "class",
+          attributes: ["id", "subject", "content"],
+        },
+      ],
     });
-  } else {
-    res.status(404).send({
-      message: "cannot find user",
-      success: false,
-    });
+    if (user) {
+      return res.send({
+        user,
+        success: true,
+      });
+    } else {
+      res.status(404).send({
+        message: "cannot find user",
+        success: false,
+      });
+    }
+  } catch (error) {
+    res.status(500).send({ message: "Internal Server Error", error });
   }
 });
 
@@ -399,30 +422,30 @@ app.get("/api/:id", async (req: Request, res: Response) => {
 app.patch("/api/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-  const student: StudentUpdateType = {
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    email: req.body.email,
-    updatedAt: new Date(),
-    occupation: req.body.occupation,
-    city: req.body.city,
-    gender: req.body.gender,
-    batch: req.body.batch,
-    classId: req.body.class.id,
-  };
-  if(hasMissingValues(student)){
+    const student: StudentUpdateType = {
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      email: req.body.email,
+      updatedAt: new Date(),
+      occupation: req.body.occupation,
+      city: req.body.city,
+      gender: req.body.gender,
+      batch: req.body.batch,
+      classId: req.body.class.id,
+    };
+    if(hasMissingValues(student)){
+      return res.send({
+        message: "fields cannot be empty, please fill out all fields",
+        success: false
+      });
+    }
+    await Student.update({...student}, { where: { id } });
     return res.send({
-      message: "fields cannot be empty, please fill out all fields",
-      success: false
-    })
-  }
-  await Student.update({...student}, { where: { id } });
-  return res.send({
-    message: "Student updated successfully",
-    success: true,
-  });
+      message: "Student updated successfully",
+      success: true,
+    });
   } catch (error) {
-    console.log(error);
+    res.status(500).send({ message: "Internal Server Error", error });
   }
 });
 
@@ -478,15 +501,19 @@ app.patch("/api/:id", async (req: Request, res: Response) => {
  */
 
 app.patch("/api/:id/course", async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const student = {
-    classId: req.body.classId,
-  };
-  await Student.update({...student}, { where: { id } });
-  return res.send({
-    message: "Student updated course successfully",
-    success: true,
-  });
+  try {
+    const { id } = req.params;
+    const student = {
+      classId: req.body.classId,
+    };
+    await Student.update({...student}, { where: { id } });
+    return res.send({
+      message: "Student updated course successfully",
+      success: true,
+    });
+  } catch (error) {
+    res.status(500).send({ message: "Internal Server Error", error });
+  }
 });
 
 /**
@@ -525,24 +552,28 @@ app.patch("/api/:id/course", async (req: Request, res: Response) => {
 
 // Search students by firstName, lastName, or email
 app.get("/api/search/students", async (req: Request, res: Response) => {
-  const { query } = req.query;
-  const students = await Student.findAll({
-    where: {
-      [Op.or]: [
-        { firstName: { [Op.like]: `%${query}%` } },
-        { lastName: { [Op.like]: `%${query}%` } },
-        { email: { [Op.like]: `%${query}%` } },
-      ],
-    },
-    include: [
-      {
-        model: Class,
-        as: "class",
-        attributes: ["id", "subject", "content"],
+  try {
+    const { query } = req.query;
+    const students = await Student.findAll({
+      where: {
+        [Op.or]: [
+          { firstName: { [Op.like]: `%${query}%` } },
+          { lastName: { [Op.like]: `%${query}%` } },
+          { email: { [Op.like]: `%${query}%` } },
+        ],
       },
-    ],
-  });
-  res.send(students);
+      include: [
+        {
+          model: Class,
+          as: "class",
+          attributes: ["id", "subject", "content"],
+        },
+      ],
+    });
+    res.send(students);
+  } catch (error) {
+    res.status(500).send({ message: "Internal Server Error", error });
+  }
 });
 
 /**
@@ -590,16 +621,20 @@ app.get("/api/search/students", async (req: Request, res: Response) => {
  */
 
 app.get("/api/search/classes", async (req: Request, res: Response) => {
-  const { query } = req.query;
-  const classes = await Class.findAll({
-    where: {
-      [Op.or]: [
-        { subject: { [Op.like]: `%${query}%` } },
-        { content: { [Op.like]: `%${query}%` } },
-      ],
-    }
-  });
-  res.send(classes);
+  try {
+    const { query } = req.query;
+    const classes = await Class.findAll({
+      where: {
+        [Op.or]: [
+          { subject: { [Op.like]: `%${query}%` } },
+          { content: { [Op.like]: `%${query}%` } },
+        ],
+      }
+    });
+    res.send(classes);
+  } catch (error) {
+    res.status(500).send({ message: "Internal Server Error", error });
+  }
 });
 
 /**
@@ -632,17 +667,21 @@ app.get("/api/search/classes", async (req: Request, res: Response) => {
  */
 
 app.post("/api/classes/create", async (req: Request, res: Response) => {
-  const newClass = {
-    subject: req.body.subject,
-    content: req.body.content,
-  };
+  try {
+    const newClass = {
+      subject: req.body.subject,
+      content: req.body.content,
+    };
 
-  const createdClass = await Class.create(newClass);
-  return res.send({
-    message: "Class created successfully",
-    class: createdClass,
-    success: true,
-  });
+    const createdClass = await Class.create(newClass);
+    return res.send({
+      message: "Class created successfully",
+      class: createdClass,
+      success: true,
+    });
+  } catch (error) {
+    res.status(500).send({ message: "Internal Server Error", error });
+  }
 });
 
 /**
@@ -685,17 +724,21 @@ app.post("/api/classes/create", async (req: Request, res: Response) => {
  */
 
 app.patch("/api/classes/:id", async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const updatedClass = {
-    subject: req.body.subject,
-    content: req.body.content,
-  };
+  try {
+    const { id } = req.params;
+    const updatedClass = {
+      subject: req.body.subject,
+      content: req.body.content,
+    };
 
-  await Class.update(updatedClass, { where: { id } });
-  return res.send({
-    message: "Class updated successfully",
-    success: true,
-  });
+    await Class.update(updatedClass, { where: { id } });
+    return res.send({
+      message: "Class updated successfully",
+      success: true,
+    });
+  } catch (error) {
+    res.status(500).send({ message: "Internal Server Error", error });
+  }
 });
 
 /**
