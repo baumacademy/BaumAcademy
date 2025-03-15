@@ -124,81 +124,6 @@ app.get("/api", async (req: Request, res: Response) => {
  *                         type: string
  */
 
-app.get("/api/:id", async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const user = await Student.findOne({
-      where: { id },
-      include: [
-        {
-          model: Class,
-          as: "class",
-          attributes: ["id", "subject", "content"],
-        },
-      ],
-    });
-    if (user) {
-      return res.send({
-        user,
-        success: true,
-      });
-    } else {
-      res.status(404).send({
-        message: "cannot find user",
-        success: false,
-      });
-    }
-  } catch (error) {
-    res.status(500).send({ message: "Internal Server Error", error });
-  }
-});
-
-/**
- * @swagger
- * /api/{id}:
- *   get:
- *     summary: Retrieve a student by ID
- *     tags: [Students]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: A student object
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 user:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: integer
- *                     firstName:
- *                       type: string
- *                     lastName:
- *                       type: string
- *                     occupation:
- *                       type: string
- *                     city:
- *                       type: string
- *                     class:
- *                       type: object
- *                       properties:
- *                         id:
- *                           type: integer
- *                         subject:
- *                           type: string
- *                         content:
- *                           type: string
- *                 success:
- *                   type: boolean
- */
-
 // Search students by firstName, lastName, or email
 app.get("/api/search/students", async (req: Request, res: Response) => {
   try {
@@ -426,6 +351,82 @@ app.post("/api/student/create", async (req: Request, res: Response) => {
  *               properties:
  *                 message:
  *                   type: string
+ *                 success:
+ *                   type: boolean
+ */
+
+
+app.get("/api/:id", async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const user = await Student.findOne({
+      where: { id },
+      include: [
+        {
+          model: Class,
+          as: "class",
+          attributes: ["id", "subject", "content"],
+        },
+      ],
+    });
+    if (user) {
+      return res.send({
+        user,
+        success: true,
+      });
+    } else {
+      res.status(404).send({
+        message: "cannot find user",
+        success: false,
+      });
+    }
+  } catch (error) {
+    res.status(500).send({ message: "Internal Server Error", error });
+  }
+});
+
+/**
+ * @swagger
+ * /api/{id}:
+ *   get:
+ *     summary: Retrieve a student by ID
+ *     tags: [Students]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: A student object
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                     firstName:
+ *                       type: string
+ *                     lastName:
+ *                       type: string
+ *                     occupation:
+ *                       type: string
+ *                     city:
+ *                       type: string
+ *                     class:
+ *                       type: object
+ *                       properties:
+ *                         id:
+ *                           type: integer
+ *                         subject:
+ *                           type: string
+ *                         content:
+ *                           type: string
  *                 success:
  *                   type: boolean
  */
