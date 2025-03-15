@@ -92,6 +92,7 @@ app.get("/api", async (req: Request, res: Response) => {
  * /api:
  *   get:
  *     summary: Retrieve a list of students
+ *     tags: [Students]
  *     responses:
  *       200:
  *         description: A list of students
@@ -123,6 +124,152 @@ app.get("/api", async (req: Request, res: Response) => {
  *                         type: string
  */
 
+app.get("/api/:id", async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const user = await Student.findOne({
+      where: { id },
+      include: [
+        {
+          model: Class,
+          as: "class",
+          attributes: ["id", "subject", "content"],
+        },
+      ],
+    });
+    if (user) {
+      return res.send({
+        user,
+        success: true,
+      });
+    } else {
+      res.status(404).send({
+        message: "cannot find user",
+        success: false,
+      });
+    }
+  } catch (error) {
+    res.status(500).send({ message: "Internal Server Error", error });
+  }
+});
+
+/**
+ * @swagger
+ * /api/{id}:
+ *   get:
+ *     summary: Retrieve a student by ID
+ *     tags: [Students]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: A student object
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                     firstName:
+ *                       type: string
+ *                     lastName:
+ *                       type: string
+ *                     occupation:
+ *                       type: string
+ *                     city:
+ *                       type: string
+ *                     class:
+ *                       type: object
+ *                       properties:
+ *                         id:
+ *                           type: integer
+ *                         subject:
+ *                           type: string
+ *                         content:
+ *                           type: string
+ *                 success:
+ *                   type: boolean
+ */
+
+// Search students by firstName, lastName, or email
+app.get("/api/search/students", async (req: Request, res: Response) => {
+  try {
+    const { query } = req.query;
+    const students = await Student.findAll({
+      where: {
+        [Op.or]: [
+          { firstName: { [Op.like]: `%${query}%` } },
+          { lastName: { [Op.like]: `%${query}%` } },
+          { email: { [Op.like]: `%${query}%` } },
+        ],
+      },
+      include: [
+        {
+          model: Class,
+          as: "class",
+          attributes: ["id", "subject", "content"],
+        },
+      ],
+    });
+    res.send(students);
+  } catch (error) {
+    res.status(500).send({ message: "Internal Server Error", error });
+  }
+});
+
+/**
+ * @swagger
+ * /api/search/students:
+ *   get:
+ *     summary: Search students by firstName, lastName, or email
+ *     tags: [Students]
+ *     parameters:
+ *       - in: query
+ *         name: query
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: A list of students
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                   firstName:
+ *                     type: string
+ *                   lastName:
+ *                     type: string
+ *                   email:
+ *                     type: string
+ *                   occupation:
+ *                     type: string
+ *                   city:
+ *                     type: string
+ *                   class:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                       subject:
+ *                         type: string
+ *                       content:
+ *                         type: string
+ */
+
 app.get("/api/classes", async (req: Request, res: Response) => {
   try {
     const classes = await Class.findAll();
@@ -137,6 +284,7 @@ app.get("/api/classes", async (req: Request, res: Response) => {
  * /api/classes:
  *   get:
  *     summary: Retrieve a list of classes
+ *     tags: [Classes]
  *     responses:
  *       200:
  *         description: A list of classes
@@ -179,6 +327,7 @@ app.get("/api/classes/:classId", async (req: Request, res: Response) => {
  * /api/classes/{classId}:
  *   get:
  *     summary: Retrieve a class by ID
+ *     tags: [Classes]
  *     parameters:
  *       - in: path
  *         name: classId
@@ -251,6 +400,7 @@ app.post("/api/student/create", async (req: Request, res: Response) => {
  * /api/student/create:
  *   post:
  *     summary: Create a new student
+ *     tags: [Students]
  *     requestBody:
  *       required: true
  *       content:
@@ -315,6 +465,7 @@ app.post("/api/student/login", async (req: Request, res: Response) => {
  * /api/student/login:
  *   post:
  *     summary: Login a student
+ *     tags: [Students]
  *     requestBody:
  *       required: true
  *       content:
@@ -341,80 +492,6 @@ app.post("/api/student/login", async (req: Request, res: Response) => {
  *                   properties:
  *                     userId:
  *                       type: integer
- *                 success:
- *                   type: boolean
- */
-
-app.get("/api/:id", async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const user = await Student.findOne({
-      where: { id },
-      include: [
-        {
-          model: Class,
-          as: "class",
-          attributes: ["id", "subject", "content"],
-        },
-      ],
-    });
-    if (user) {
-      return res.send({
-        user,
-        success: true,
-      });
-    } else {
-      res.status(404).send({
-        message: "cannot find user",
-        success: false,
-      });
-    }
-  } catch (error) {
-    res.status(500).send({ message: "Internal Server Error", error });
-  }
-});
-
-/**
- * @swagger
- * /api/{id}:
- *   get:
- *     summary: Retrieve a student by ID
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: A student object
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 user:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: integer
- *                     firstName:
- *                       type: string
- *                     lastName:
- *                       type: string
- *                     occupation:
- *                       type: string
- *                     city:
- *                       type: string
- *                     class:
- *                       type: object
- *                       properties:
- *                         id:
- *                           type: integer
- *                         subject:
- *                           type: string
- *                         content:
- *                           type: string
  *                 success:
  *                   type: boolean
  */
@@ -454,6 +531,7 @@ app.patch("/api/:id", async (req: Request, res: Response) => {
  * /api/{id}:
  *   patch:
  *     summary: Update a student by ID
+ *     tags: [Students]
  *     parameters:
  *       - in: path
  *         name: id
@@ -521,6 +599,7 @@ app.patch("/api/:id/course", async (req: Request, res: Response) => {
  * /api/{id}/course:
  *   patch:
  *     summary: Update a student's course by ID
+ *     tags: [Students]
  *     parameters:
  *       - in: path
  *         name: id
@@ -550,76 +629,6 @@ app.patch("/api/:id/course", async (req: Request, res: Response) => {
  *                   type: boolean
  */
 
-// Search students by firstName, lastName, or email
-app.get("/api/search/students", async (req: Request, res: Response) => {
-  try {
-    const { query } = req.query;
-    const students = await Student.findAll({
-      where: {
-        [Op.or]: [
-          { firstName: { [Op.like]: `%${query}%` } },
-          { lastName: { [Op.like]: `%${query}%` } },
-          { email: { [Op.like]: `%${query}%` } },
-        ],
-      },
-      include: [
-        {
-          model: Class,
-          as: "class",
-          attributes: ["id", "subject", "content"],
-        },
-      ],
-    });
-    res.send(students);
-  } catch (error) {
-    res.status(500).send({ message: "Internal Server Error", error });
-  }
-});
-
-/**
- * @swagger
- * /api/search/students:
- *   get:
- *     summary: Search students by firstName, lastName, or email
- *     parameters:
- *       - in: query
- *         name: query
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: A list of students
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: integer
- *                   firstName:
- *                     type: string
- *                   lastName:
- *                     type: string
- *                   email:
- *                     type: string
- *                   occupation:
- *                     type: string
- *                   city:
- *                     type: string
- *                   class:
- *                     type: object
- *                     properties:
- *                       id:
- *                         type: integer
- *                       subject:
- *                         type: string
- *                       content:
- *                         type: string
- */
-
 app.get("/api/search/classes", async (req: Request, res: Response) => {
   try {
     const { query } = req.query;
@@ -642,6 +651,7 @@ app.get("/api/search/classes", async (req: Request, res: Response) => {
  * /api/search/classes:
  *   get:
  *     summary: Search classes by subject or content
+ *     tags: [Classes]
  *     parameters:
  *       - in: query
  *         name: query
@@ -689,6 +699,7 @@ app.post("/api/classes/create", async (req: Request, res: Response) => {
  * /api/classes/create:
  *   post:
  *     summary: Create a new class
+ *     tags: [Classes]
  *     requestBody:
  *       required: true
  *       content:
@@ -746,6 +757,7 @@ app.patch("/api/classes/:id", async (req: Request, res: Response) => {
  * /api/classes/{id}:
  *   patch:
  *     summary: Update a class by ID
+ *     tags: [Classes]
  *     parameters:
  *       - in: path
  *         name: id
